@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import TaskTable from '@/components/Tasks/TaskTable';
 import TaskForm from '@/components/Tasks/TaskForm';
 import { Task } from '@/interfaces/Task';
-import { api } from '@/lib/api';
+import { getTasks, createTask, updateTask, deleteTask } from '@/lib/data';
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -15,10 +15,10 @@ export default function TasksPage() {
     fetchTasks();
   }, []);
 
-  const fetchTasks = async () => {
+  const fetchTasks = async (filters?: { priority?: string; type?: string }) => {
     try {
-      const data = await api.getTasks();
-      setTasks(data);
+      const tasks = await getTasks(filters);
+      setTasks(tasks);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
@@ -26,7 +26,7 @@ export default function TasksPage() {
 
   const handleCreateTask = async (task: Omit<Task, '_id'>) => {
     try {
-      await api.createTask(task);
+      await createTask(task);
       fetchTasks();
       setShowForm(false);
     } catch (error) {
@@ -41,7 +41,7 @@ export default function TasksPage() {
 
   const handleDeleteTask = async (id: string) => {
     try {
-      await api.deleteTask(id);
+      await deleteTask(id);
       fetchTasks();
     } catch (error) {
       console.error('Error deleting task:', error);
@@ -78,7 +78,12 @@ export default function TasksPage() {
             <TaskForm
               onSubmit={
                 editingTask
-                  ? (task) => api.updateTask(editingTask._id!, task)
+                  ? async (task) => {
+                      await updateTask(editingTask._id!, task);
+                      fetchTasks();
+                      setShowForm(false);
+                      setEditingTask(null);
+                    }
                   : handleCreateTask
               }
               initialData={editingTask}
@@ -92,7 +97,7 @@ export default function TasksPage() {
       )}
 
       {/* Task Table */}
-      <div className="w-full max-w-4xl mt-4">
+      <div className="w-full mt-4">
         <TaskTable
           tasks={tasks}
           onEdit={handleEditTask}

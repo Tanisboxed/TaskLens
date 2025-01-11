@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
           content: `Here are the current tasks: ${JSON.stringify(tasks)}. Question: ${message}`
         }
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
     });
 
     // Make sure we're sending a properly structured response
