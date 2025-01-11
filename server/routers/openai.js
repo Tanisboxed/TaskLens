@@ -33,10 +33,21 @@ router.post("/", async (req, res) => {
       model: "gpt-3.5-turbo",
     });
 
-    res.json({ response: completion.choices[0].message.content });
+    // Make sure we're sending a properly structured response
+    if (!completion.choices[0]?.message?.content) {
+      throw new Error('Invalid response from OpenAI');
+    }
+
+    res.json({ 
+      response: completion.choices[0].message.content,
+      status: 'success'
+    });
   } catch (error) {
     console.error('Chat error:', error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      message: error.message,
+      status: 'error'
+    });
   }
 });
 

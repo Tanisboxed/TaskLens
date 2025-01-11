@@ -44,7 +44,13 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message }),
     });
-    if (!response.ok) throw new Error('Failed to get chat response');
-    return response.json();
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to get chat response');
+    }
+
+    return data;
   }
 };
