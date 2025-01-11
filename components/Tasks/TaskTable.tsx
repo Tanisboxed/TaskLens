@@ -16,6 +16,7 @@ export default function TaskTable({ tasks, onEdit, onDelete }: TaskTableProps) {
               <th className="px-6 py-3">Title</th>
               <th className="px-6 py-3">Priority</th>
               <th className="px-6 py-3">Type</th>
+              <th className="px-6 py-3">Status</th>
               <th className="px-6 py-3">Assigned SP</th>
               <th className="px-6 py-3">Actual SP</th>
               <th className="px-6 py-3">Jira Ticket</th>
@@ -35,6 +36,7 @@ export default function TaskTable({ tasks, onEdit, onDelete }: TaskTableProps) {
                 <td className="px-6 py-4">{task.title}</td>
                 <td className="px-6 py-4">{task.priority}</td>
                 <td className="px-6 py-4">{task.type}</td>
+                <td className="px-6 py-4">{task.status}</td>
                 <td className="px-6 py-4">{task.assigned_sp}</td>
                 <td className="px-6 py-4">{task.actual_sp}</td>
                 <td className="px-6 py-4">{task.jira_ticket}</td>
