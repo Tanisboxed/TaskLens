@@ -2,12 +2,21 @@ import { Task } from '@/interfaces/Task';
 
 interface PriorityDistribution {
   labels: string[];
-  data: number[];
-  backgroundColor: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string[];
+  }[];
 }
 
 export function getTaskPriorityDistribution(tasks: Task[]): PriorityDistribution {
-  const priorityCount: { [key: string]: number } = {};
+  const priorityCount: { [key: string]: number } = {
+    P0: 0,
+    P1: 0,
+    P2: 0,
+    P3: 0,
+    P4: 0
+  };
   
   // Count tasks by priority
   tasks.forEach(task => {
@@ -16,16 +25,18 @@ export function getTaskPriorityDistribution(tasks: Task[]): PriorityDistribution
     }
   });
 
-  // Define colors for different priorities
-  const colorMap: { [key: string]: string } = {
-    High: '#ef4444',    // red
-    Medium: '#f59e0b',  // amber
-    Low: '#10b981',     // green
-  };
-
   return {
     labels: Object.keys(priorityCount),
-    data: Object.values(priorityCount),
-    backgroundColor: Object.keys(priorityCount).map(priority => colorMap[priority] || '#6366f1'),
+    datasets: [{
+      label: 'Tasks by Priority',
+      data: Object.values(priorityCount),
+      backgroundColor: [
+        '#ef4444', // red for P0
+        '#f97316', // orange for P1
+        '#f59e0b', // amber for P2
+        '#84cc16', // lime for P3
+        '#22c55e', // green for P4
+      ],
+    }]
   };
 } 

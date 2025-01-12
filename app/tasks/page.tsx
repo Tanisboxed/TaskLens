@@ -3,26 +3,27 @@
 import { useState, useEffect } from 'react';
 import TaskTable from '@/components/Tasks/TaskTable';
 import TaskForm from '@/components/Tasks/TaskForm';
+import TaskCharts from '@/components/Tasks/TaskCharts';
 import { Task } from '@/interfaces/Task';
-import { getTasks, createTask, updateTask, deleteTask } from '@/lib/data';
+import { getTasks, createTask, updateTask, deleteTask } from '@/lib/data/tasks';
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async (filters?: { priority?: string; type?: string }) => {
+  const fetchTasks = async () => {
     try {
-      const tasks = await getTasks(filters);
-      setTasks(tasks);
+      const fetchedTasks = await getTasks();
+      setTasks(fetchedTasks);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
   };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   const handleCreateTask = async (task: Omit<Task, '_id'>) => {
     try {
@@ -74,35 +75,29 @@ export default function TasksPage() {
       {/* Task Form */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
-          <div className="bg-gray-800 rounded-lg p-8 shadow-lg max-w-md w-full">
-            <TaskForm
-              onSubmit={
-                editingTask
-                  ? async (task) => {
-                      await updateTask(editingTask._id!, task);
-                      fetchTasks();
-                      setShowForm(false);
-                      setEditingTask(null);
-                    }
-                  : handleCreateTask
-              }
-              initialData={editingTask}
-              onCancel={() => {
-                setEditingTask(null);
-                setShowForm(false);
-              }}
-            />
-          </div>
+          <TaskForm
+            onSubmit={editingTask ? (task) => updateTask(editingTask._id!, task) : handleCreateTask}
+            initialData={editingTask}
+            onCancel={() => {
+              setShowForm(false);
+              setEditingTask(null);
+            }}
+          />
         </div>
       )}
 
       {/* Task Table */}
-      <div className="w-full mt-4">
+      <div className="w-full mt-8">
         <TaskTable
           tasks={tasks}
           onEdit={handleEditTask}
           onDelete={handleDeleteTask}
         />
+      </div>
+
+      {/* Charts Stack */}
+      <div className="w-full mt-8 space-y-8">
+        <TaskCharts tasks={tasks} />
       </div>
     </div>
   );
