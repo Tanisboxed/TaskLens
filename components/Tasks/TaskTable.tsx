@@ -206,12 +206,12 @@ export default function TaskTable({ tasks, onEdit, onDelete }: TaskTableProps) {
         backgroundColor: 'transparent',
         padding: '0px',
         margin: '0px',
-        position: 'sticky',
+        position: 'sticky' as const,
         left: 0,
         zIndex: 10,
       },
     },
-  };
+  } as const;
 
   return (
     <div className="w-full relative">
