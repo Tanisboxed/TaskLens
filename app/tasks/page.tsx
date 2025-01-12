@@ -6,6 +6,7 @@ import TaskForm from '@/components/Tasks/TaskForm';
 import TaskCharts from '@/components/Tasks/TaskCharts';
 import { Task } from '@/interfaces/Task';
 import { getTasks, createTask, updateTask, deleteTask } from '@/lib/data/tasks';
+import Link from 'next/link';
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -62,16 +63,37 @@ export default function TasksPage() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white flex flex-col items-center p-8">
+      <header className="relative z-10 flex items-center justify-between w-full mb-8">
+        <div className="flex items-center">
+          <Link href="/" className="mr-2 text-white flex items-center">
+            {/* Back Arrow Icon as SVG */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
+            Task Manager
+          </h1>
+        </div>
+        <Link href="/chat" className="flex items-center bg-white rounded-full px-4 py-2 text-indigo-600 shadow-lg hover:bg-gray-200 transition">
+          <div className="w-10 h-10 flex items-center justify-center">
+            💬
+          </div>
+          <span className="ml-0.5">Go to Chat</span>
+        </Link>
+      </header>
+
       {/* Decorative Elements - Modified for subtlety */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute w-72 h-72 bg-purple-500/20 rounded-full opacity-10 blur-3xl top-10 left-16 animate-pulse"></div>
         <div className="absolute w-96 h-96 bg-blue-500/20 rounded-full opacity-10 blur-3xl bottom-20 right-20 animate-pulse"></div>
       </div>
-
-      {/* Page Title */}
-      <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-8">
-        Task Manager
-      </h1>
 
       {/* Create Task Button */}
       {!showForm && (

@@ -35,7 +35,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="absolute bottom-4 text-sm text-gray-500 z-10">
-        &copy; {new Date().getFullYear()} Tasklebs. All rights reserved.
+        &copy; {new Date().getFullYear()} Tasklens. All rights reserved.
       </footer>
     </div>
   );

@@ -5,6 +5,7 @@ import ChatWindow from '@/components/Chat/ChatWindow';
 import ChatInput from '@/components/Chat/ChatInput';
 import { Message } from '@/interfaces/Message';
 import * as api from '@/lib/data';
+import Link from 'next/link';
 
 const SUGGESTED_QUERIES = [
   "Which tasks are due today?",
@@ -46,12 +47,29 @@ export default function ChatPage() {
 
       {/* Header */}
       <header className="z-10 flex items-center justify-between px-6 py-4 bg-gradient-to-r from-purple-700 to-indigo-600 shadow-md rounded-b-lg">
-        <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-pink-300">
-          Task Assistant
-        </h1>
-        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-indigo-600 shadow-lg">
-          📋
+        <div className="flex items-center">
+          <Link href="/" className="mr-2 text-white">
+            {/* Back Arrow Icon as SVG */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-pink-300">
+            Task Assistant
+          </h1>
         </div>
+        <Link href="/tasks" className="flex items-center bg-white rounded-full px-4 py-2 text-indigo-600 shadow-lg hover:bg-gray-200 transition">
+          <div className="w-10 h-10 flex items-center justify-center">
+            📋
+          </div>
+          <span className="ml-0.5">Go to Tasks</span>
+        </Link>
       </header>
 
       {/* Suggested Queries */}
