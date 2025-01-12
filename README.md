@@ -71,7 +71,7 @@ NEXT_PUBLIC_API_URL=your_next_public_api_url
 GEMINI_KEY=your_gemini_api_key
 ```
 
-## Contributing 
+## Contributions
 1. Fork the repo.
 2. Create a new branch for your feature
    ``` bash
