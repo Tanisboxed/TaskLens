@@ -16,15 +16,20 @@ const taskSchema = new mongoose.Schema({
         required: true,
         enum: ["Planned", "ADHOC", "On-going"],
     },
+    status: {
+        type: String,
+        required: true,
+        enum: ["Not Started", "In Progress", "Completed"],
+    },
     assigned_sp: {
         type: Number,
         required: true,
-        min: 0,
+        min: 1,
     },
     actual_sp: {
         type: Number,
         required: true,
-        min: 0,
+        min: 1,
     },
     jira_ticket: {
         type: String,
