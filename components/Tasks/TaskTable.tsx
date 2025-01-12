@@ -11,20 +11,31 @@ interface TaskTableProps {
 
 export default function TaskTable({ tasks, onEdit, onDelete }: TaskTableProps) {
   const [filterText, setFilterText] = useState('');
+  const [filterType, setFilterType] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [filterPriority, setFilterPriority] = useState('');
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
 
-  const filteredItems = tasks.filter(
-    item => {
-      return (
-        (item.title && item.title.toLowerCase().includes(filterText.toLowerCase())) ||
-        (item.priority && item.priority.toLowerCase().includes(filterText.toLowerCase())) ||
-        (item.type && item.type.toLowerCase().includes(filterText.toLowerCase())) ||
-        (item.status && item.status.toLowerCase().includes(filterText.toLowerCase())) ||
-        (item.jira_ticket && item.jira_ticket.toLowerCase().includes(filterText.toLowerCase())) ||
-        (item.comment && item.comment.toLowerCase().includes(filterText.toLowerCase()))
-      );
-    }
-  );
+  const filteredItems = tasks.filter(item => {
+    const matchesText = 
+      (item.title && item.title.toLowerCase().includes(filterText.toLowerCase())) ||
+      (item.jira_ticket && item.jira_ticket.toLowerCase().includes(filterText.toLowerCase())) ||
+      (item.comment && item.comment.toLowerCase().includes(filterText.toLowerCase()));
+
+    const matchesType = !filterType || item.type === filterType;
+    const matchesStatus = !filterStatus || item.status === filterStatus;
+    const matchesPriority = !filterPriority || item.priority === filterPriority;
+
+    return matchesText && matchesType && matchesStatus && matchesPriority;
+  });
+
+  const handleClearFilters = () => {
+    setFilterText('');
+    setFilterType('');
+    setFilterStatus('');
+    setFilterPriority('');
+    setResetPaginationToggle(!resetPaginationToggle);
+  };
 
   const columns = [
     {
@@ -204,23 +215,56 @@ export default function TaskTable({ tasks, onEdit, onDelete }: TaskTableProps) {
 
   return (
     <div className="w-full relative">
-      <div className="sticky left-0 z-20 w-fit mb-4">
+      <div className="sticky left-0 z-20 w-full mb-4 flex flex-wrap gap-4 items-center">
         <input
           type="text"
-          placeholder="Filter by any field..."
+          placeholder="Search text..."
           value={filterText}
           onChange={e => setFilterText(e.target.value)}
           className="px-4 py-2 bg-black/50 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 w-64 border border-purple-500/20"
         />
-        {filterText && (
+
+        <select
+          value={filterType}
+          onChange={e => setFilterType(e.target.value)}
+          className="px-4 py-2 bg-black/50 rounded-lg text-white focus:ring-2 focus:ring-purple-500 border border-purple-500/20"
+        >
+          <option value="">All Types</option>
+          <option value="Planned">Planned</option>
+          <option value="ADHOC">ADHOC</option>
+          <option value="On-going">On-going</option>
+        </select>
+
+        <select
+          value={filterStatus}
+          onChange={e => setFilterStatus(e.target.value)}
+          className="px-4 py-2 bg-black/50 rounded-lg text-white focus:ring-2 focus:ring-purple-500 border border-purple-500/20"
+        >
+          <option value="">All Statuses</option>
+          <option value="Not Started">Not Started</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+
+        <select
+          value={filterPriority}
+          onChange={e => setFilterPriority(e.target.value)}
+          className="px-4 py-2 bg-black/50 rounded-lg text-white focus:ring-2 focus:ring-purple-500 border border-purple-500/20"
+        >
+          <option value="">All Priorities</option>
+          <option value="P0">P0</option>
+          <option value="P1">P1</option>
+          <option value="P2">P2</option>
+          <option value="P3">P3</option>
+          <option value="P4">P4</option>
+        </select>
+
+        {(filterText || filterType || filterStatus || filterPriority) && (
           <button
-            onClick={() => {
-              setResetPaginationToggle(!resetPaginationToggle);
-              setFilterText('');
-            }}
-            className="px-4 py-2 bg-black/50 rounded-lg text-white hover:bg-purple-500/20 ml-2 border border-purple-500/20"
+            onClick={handleClearFilters}
+            className="px-4 py-2 bg-black/50 rounded-lg text-white hover:bg-purple-500/20 border border-purple-500/20"
           >
-            Clear
+            Clear Filters
           </button>
         )}
       </div>

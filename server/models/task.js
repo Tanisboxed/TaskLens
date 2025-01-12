@@ -24,12 +24,12 @@ const taskSchema = new mongoose.Schema({
     assigned_sp: {
         type: Number,
         required: true,
-        min: 0,
+        min: 1,
     },
     actual_sp: {
         type: Number,
         required: true,
-        min: 0,
+        min: 1,
     },
     jira_ticket: {
         type: String,

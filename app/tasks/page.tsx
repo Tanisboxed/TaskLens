@@ -28,10 +28,21 @@ export default function TasksPage() {
   const handleCreateTask = async (task: Omit<Task, '_id'>) => {
     try {
       await createTask(task);
-      fetchTasks();
+      await fetchTasks();
       setShowForm(false);
     } catch (error) {
       console.error('Error creating task:', error);
+    }
+  };
+
+  const handleUpdateTask = async (id: string, task: Omit<Task, '_id'>) => {
+    try {
+      await updateTask(id, task);
+      await fetchTasks();
+      setShowForm(false);
+      setEditingTask(null);
+    } catch (error) {
+      console.error('Error updating task:', error);
     }
   };
 
@@ -43,7 +54,7 @@ export default function TasksPage() {
   const handleDeleteTask = async (id: string) => {
     try {
       await deleteTask(id);
-      fetchTasks();
+      await fetchTasks();
     } catch (error) {
       console.error('Error deleting task:', error);
     }
@@ -51,10 +62,10 @@ export default function TasksPage() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white flex flex-col items-center p-8">
-      {/* Decorative Elements */}
+      {/* Decorative Elements - Modified for subtlety */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-72 h-72 bg-purple-500 rounded-full opacity-30 blur-3xl top-10 left-16 animate-pulse"></div>
-        <div className="absolute w-96 h-96 bg-blue-500 rounded-full opacity-20 blur-3xl bottom-20 right-20 animate-pulse"></div>
+        <div className="absolute w-72 h-72 bg-purple-500/20 rounded-full opacity-10 blur-3xl top-10 left-16 animate-pulse"></div>
+        <div className="absolute w-96 h-96 bg-blue-500/20 rounded-full opacity-10 blur-3xl bottom-20 right-20 animate-pulse"></div>
       </div>
 
       {/* Page Title */}
@@ -76,7 +87,13 @@ export default function TasksPage() {
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
           <TaskForm
-            onSubmit={editingTask ? (task) => updateTask(editingTask._id!, task) : handleCreateTask}
+            onSubmit={async (task) => {
+              if (editingTask) {
+                await handleUpdateTask(editingTask._id!, task);
+              } else {
+                await handleCreateTask(task);
+              }
+            }}
             initialData={editingTask}
             onCancel={() => {
               setShowForm(false);
@@ -89,6 +106,7 @@ export default function TasksPage() {
       {/* Task Table */}
       <div className="w-full mt-8">
         <TaskTable
+          key={tasks.length}
           tasks={tasks}
           onEdit={handleEditTask}
           onDelete={handleDeleteTask}
@@ -97,7 +115,10 @@ export default function TasksPage() {
 
       {/* Charts Stack */}
       <div className="w-full mt-8 space-y-8">
-        <TaskCharts tasks={tasks} />
+        <TaskCharts 
+          key={tasks.length}
+          tasks={tasks} 
+        />
       </div>
     </div>
   );
