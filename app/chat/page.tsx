@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import ChatWindow from '@/components/Chat/ChatWindow';
 import ChatInput from '@/components/Chat/ChatInput';
-import { Message } from '@/interfaces/Message';
+// import { Message } from '@/interfaces/Message';
 import * as api from '@/lib/data';
 
 const SUGGESTED_QUERIES = [
