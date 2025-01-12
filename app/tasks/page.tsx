@@ -94,7 +94,7 @@ export default function TasksPage() {
                 await handleCreateTask(task);
               }
             }}
-            initialData={editingTask ?? undefined} 
+            initialData={editingTask} 
             onCancel={() => {
               setShowForm(false);
               setEditingTask(null);

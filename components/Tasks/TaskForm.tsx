@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 interface TaskFormProps {
   onSubmit: (task: Omit<Task, '_id'>) => void;
-  initialData?: Task;
+  initialData: Task | null;
   onCancel: () => void;
 }
 
