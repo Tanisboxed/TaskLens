@@ -107,7 +107,7 @@ export default function TasksPage() {
 
       {/* Task Form */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]">
           <TaskForm
             onSubmit={async (task) => {
               if (editingTask) {

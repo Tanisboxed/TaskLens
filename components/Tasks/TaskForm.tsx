@@ -28,7 +28,7 @@ export default function TaskForm({ onSubmit, initialData, onCancel }: TaskFormPr
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-4xl w-full mx-auto p-6 bg-gray-800 rounded-lg shadow-lg space-y-6 relative"
+      className="max-w-4xl w-full mx-auto p-6 bg-gray-800 rounded-lg shadow-lg space-y-6 relative z-50"
     >
       {/* Close Button */}
       <button

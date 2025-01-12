@@ -215,7 +215,7 @@ export default function TaskTable({ tasks, onEdit, onDelete }: TaskTableProps) {
 
   return (
     <div className="w-full relative">
-      <div className="sticky left-0 z-20 w-full mb-4 flex flex-wrap gap-4 items-center">
+      <div className="sticky left-0 z-10 w-full mb-4 flex flex-wrap gap-4 items-center">
         <input
           type="text"
           placeholder="Search text..."
@@ -280,7 +280,7 @@ export default function TaskTable({ tasks, onEdit, onDelete }: TaskTableProps) {
           paginationPerPage={10}
           paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
           paginationComponent={({ currentPage, rowsPerPage, rowCount, onChangePage, onChangeRowsPerPage }) => (
-            <nav className="sticky left-0 z-20">
+            <nav className="sticky left-0 z-10">
               <div className="py-3 flex items-center space-x-2">
                 <select
                   value={rowsPerPage}
