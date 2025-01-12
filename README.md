@@ -8,7 +8,7 @@ Tasklens is a task assistant chatbot designed to streamline task management with
 - [TechStack](#techstack)
 - [Installation](#installation)
 - [Contributions](#contributions)
-- [Deployment Links](#deploymentlinks)
+- [Deployment](#deployment)
 
 ## Authors
 - [@TanishaJauhari](https://github.com/Tanisboxed)
@@ -88,7 +88,7 @@ GEMINI_KEY=your_gemini_api_key
 5. Open a pull request.
 
 
-## Deployment Links
+## Deployment
 
 - [Front-end](https://task-lens-assistant.vercel.app)
 - [Back-end](https://tasklens.onrender.com/tasks)
