@@ -1,51 +1,72 @@
 import express from "express";
-import OpenAI from 'openai';
-import Task from "../models/task.js"; // Adjust the path as necessary
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import Task from "../models/task.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const router = express.Router();
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const formatTasksForContext = (tasks) => {
+  return tasks.map(task => ({
+    title: task.title,
+    priority: task.priority,
+    status: task.status,
+    due_date: new Date(task.due_date).toISOString().split('T')[0],
+    type: task.type,
+    jira_ticket: task.jira_ticket
+  }));
+};
 
-// Chat endpoint
 router.post("/", async (req, res) => {
   try {
     const { message } = req.body;
-
-    // Get tasks for context
     const tasks = await Task.find({});
+    const formattedTasks = formatTasksForContext(tasks);
 
-    const completion = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: "You are a task management assistant. You can only answer questions about the tasks in the database. Your responses should be focused on task-related queries only."
-        },
-        {
-          role: "user",
-          content: `Here are the current tasks: ${JSON.stringify(tasks)}. Question: ${message}`
-        }
-      ],
-      model: "gpt-4o-mini",
-    });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    // Make sure we're sending a properly structured response
-    if (!completion.choices[0]?.message?.content) {
-      throw new Error('Invalid response from OpenAI');
-    }
+    const prompt = `
+      You are a task management assistant with access to a database of tasks.
+      Your role is to:
+      1. Answer questions only about the tasks in the database
+      2. Provide clear, concise responses about task status, priorities, due dates, etc.
+      3. Return "I can only answer questions about tasks in the database. This query is out of scope." for non-task-related questions
+      4. Format dates in a readable format (YYYY-MM-DD)
+      5. When listing tasks:
+         - Start each task on a new line
+         - Use bullet points (•) for each task
+         - Include the title, followed by relevant details in parentheses
+         - For multiple tasks, number them
+         - Add a blank line between different sections
+      6. Format your response for readability:
+         - Use line breaks between sections
+         - Use bold for important numbers or counts
+         - Organize information in a clear hierarchy
 
+      Example format for listing tasks:
+      Here are the matching tasks:
+
+      1. • Task Title (Priority: P1, Status: In Progress)
+      2. • Another Task (Due: 2024-02-01, Type: ADHOC)
+
+      Current tasks context: ${JSON.stringify(formattedTasks)}
+
+      User question: ${message}
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    
     res.json({ 
-      response: completion.choices[0].message.content,
+      response: response.text(),
       status: 'success'
     });
   } catch (error) {
     console.error('Chat error:', error);
     res.status(500).json({ 
-      message: error.message,
+      message: error.message || 'An error occurred while processing your request',
       status: 'error'
     });
   }

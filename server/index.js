@@ -1,18 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import OpenAI from 'openai';
 import chatRouter from "./routers/openai.js";
-
-dotenv.config();
-
 import tasksRouter from "./routers/tasks.js";
 import connectDB from "./db/mongoose.js";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
+dotenv.config();
 connectDB();
 
 const app = express();
