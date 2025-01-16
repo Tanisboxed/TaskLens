@@ -17,10 +17,12 @@ export default function TaskTable({ tasks, onEdit, onDelete }: TaskTableProps) {
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
 
   const filteredItems = tasks.filter(item => {
+    const searchText = filterText.trim().toLowerCase();
+    
     const matchesText = 
-      (item.title && item.title.toLowerCase().includes(filterText.toLowerCase())) ||
-      (item.jira_ticket && item.jira_ticket.toLowerCase().includes(filterText.toLowerCase())) ||
-      (item.comment && item.comment.toLowerCase().includes(filterText.toLowerCase()));
+      (item.title && item.title.toLowerCase().includes(searchText)) ||
+      (item.jira_ticket && item.jira_ticket.toLowerCase().includes(searchText)) ||
+      (item.comment && item.comment.toLowerCase().includes(searchText));
 
     const matchesType = !filterType || item.type === filterType;
     const matchesStatus = !filterStatus || item.status === filterStatus;

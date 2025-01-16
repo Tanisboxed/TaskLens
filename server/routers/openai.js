@@ -19,48 +19,94 @@ const formatTasksForContext = (tasks) => {
   }));
 };
 
+const handleTaskOperation = async (response) => {
+  try {
+    if (response.trim().startsWith('{')) {
+      const operationData = JSON.parse(response);
+      
+      if (operationData.action === 'create') {
+        return {
+          type: 'show_form',
+          action: 'create'
+        };
+      }
+      
+      if (operationData.action === 'edit' && operationData.jira_ticket) {
+        const taskToEdit = await Task.findOne({ jira_ticket: operationData.jira_ticket });
+        if (!taskToEdit) {
+          return `No task found with JIRA ticket: ${operationData.jira_ticket}`;
+        }
+        return {
+          type: 'show_form',
+          action: 'edit',
+          data: taskToEdit
+        };
+      }
+
+      if (operationData.action === 'delete' && operationData.jira_ticket) {
+        const taskToDelete = await Task.findOne({ jira_ticket: operationData.jira_ticket });
+        if (!taskToDelete) {
+          return `No task found with JIRA ticket: ${operationData.jira_ticket}`;
+        }
+        return {
+          type: 'confirm_delete',
+          data: taskToDelete
+        };
+      }
+    }
+    return response;
+  } catch (error) {
+    console.error('Operation error:', error);
+    return response;
+  }
+};
+
+const formatTaskDetails = (task) => {
+  return `
+Title: ${task.title}
+Priority: ${task.priority}
+Type: ${task.type}
+Status: ${task.status}
+Story Points: ${task.assigned_sp} (assigned) / ${task.actual_sp} (actual)
+JIRA Ticket: ${task.jira_ticket}
+Due Date: ${new Date(task.due_date).toLocaleDateString()}
+${task.comment ? `Comment: ${task.comment}` : ''}
+`;
+};
+
 router.post("/", async (req, res) => {
   try {
     const { message } = req.body;
     const tasks = await Task.find({});
     const formattedTasks = formatTasksForContext(tasks);
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
     const prompt = `
-      You are a task management assistant with access to a database of tasks.
-      Your role is to:
-      1. Answer questions only about the tasks in the database
-      2. Provide clear, concise responses about task status, priorities, due dates, etc.
-      3. Return "I can only answer questions about tasks in the database. This query is out of scope." for non-task-related questions
-      4. Format dates in a readable format (YYYY-MM-DD)
-      5. When listing tasks:
-         - Start each task on a new line
-         - Use bullet points (•) for each task
-         - Include the title, followed by relevant details in parentheses
-         - For multiple tasks, number them
-         - Add a blank line between different sections
-      6. Format your response for readability:
-         - Use line breaks between sections
-         - Use bold for important numbers or counts
-         - Organize information in a clear hierarchy
+      You are a task management assistant. When users want to:
 
-      Example format for listing tasks:
-      Here are the matching tasks:
+      1. Create a task: Return JSON with "action": "create"
+      2. Edit a task: Return JSON with "action": "edit" and "jira_ticket": "<ticket_id>"
+      3. Delete a task: Return JSON with "action": "delete" and "jira_ticket": "<ticket_id>"
+      4. For other queries: Respond normally with task information
 
-      1. • Task Title (Priority: P1, Status: In Progress)
-      2. • Another Task (Due: 2024-02-01, Type: ADHOC)
+      Example responses:
+      For create: {"action": "create"}
+      For edit: {"action": "edit", "jira_ticket": "ABC-123"}
+      For delete: {"action": "delete", "jira_ticket": "ABC-123"}
 
       Current tasks context: ${JSON.stringify(formattedTasks)}
 
       User question: ${message}
     `;
 
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const result = await model.generateContent(prompt);
-    const response = result.response;
+    const response = result.response.text();
+    
+    // Process any CRUD operations in the response
+    const finalResponse = await handleTaskOperation(response);
     
     res.json({ 
-      response: response.text(),
+      response: finalResponse,
       status: 'success'
     });
   } catch (error) {
