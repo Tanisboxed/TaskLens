@@ -1,6 +1,18 @@
 # TaskLens
 Tasklens is a task assistant chatbot designed to streamline task management with the help of Gemini API. The project integrates a Nextjs front-end with an Express.js backend to provide a seamless and efficient user experience. Includes task visualization and management.
 
+## Table of Contents
+
+- [Authors](#authors)
+- [Features](#features)
+- [TechStack](#techstack)
+- [Installation](#installation)
+- [Contributions](#contributions)
+- [Deployment](#deployment)
+
+## Authors
+- [@TanishaJauhari](https://github.com/Tanisboxed)
+- [@R.K.Jyothish](https://github.com/JyothishRK)
 
 ## Features
 
@@ -18,7 +30,7 @@ Tasklens is a task assistant chatbot designed to streamline task management with
 - Interactive user interface for managing and visualizing tasks.
 
 
-## Tech Stack
+## TechStack
 ### Frontend
 - **Next.js**
 - **Tailwind CSS**
@@ -59,7 +71,7 @@ NEXT_PUBLIC_API_URL=your_next_public_api_url
 GEMINI_KEY=your_gemini_api_key
 ```
 
-## Contributing 
+## Contributions
 1. Fork the repo.
 2. Create a new branch for your feature
    ``` bash
@@ -74,6 +86,12 @@ GEMINI_KEY=your_gemini_api_key
    git push origin feature-name
    ```
 5. Open a pull request.
+
+
+## Deployment
+
+- [Front-end](https://task-lens-assistant.vercel.app)
+- [Back-end](https://tasklens.onrender.com/tasks)
 
 
 
