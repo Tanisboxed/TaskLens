@@ -86,12 +86,24 @@ router.post("/", async (req, res) => {
       1. Create a task: Return JSON with "action": "create"
       2. Edit a task: Return JSON with "action": "edit" and "jira_ticket": "<ticket_id>"
       3. Delete a task: Return JSON with "action": "delete" and "jira_ticket": "<ticket_id>"
-      4. For other queries: Respond normally with task information
-
+      4. For other queries: Format your response in a clear, readable way:
+         - For task listings: Use numbered lists
+         - Include relevant details in a structured format
+         - Use markdown formatting for better readability
+         - Highlight important information using bold or italics
+         
       Example responses:
       For create: {"action": "create"}
       For edit: {"action": "edit", "jira_ticket": "ABC-123"}
       For delete: {"action": "delete", "jira_ticket": "ABC-123"}
+      
+      For task listings:
+      1. **[Title]** Task Name
+         - Priority: P1
+         - Status: In Progress
+         - Due Date: Jan 25, 2025
+         - Type: On-going
+         - JIRA: ABC-123
 
       Current tasks context: ${JSON.stringify(formattedTasks)}
 
